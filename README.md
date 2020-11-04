@@ -21,6 +21,8 @@ llvmenv entries
 local-llvm 10.0.0
 ```
 
+about `1.5 hours` in my MBP 2018
+
 ### local
 
 Add local llvm for build to: `$XDG_CONFIG_HOME/llvmenv/entry.toml
