@@ -1,5 +1,5 @@
 [package]
-name = "llvm-rust-demo"
+name = "simple"
 version = "0.1.0"
 authors = ["Phodal Huang <h@phodal.com>"]
 edition = "2018"
@@ -9,8 +9,3 @@ edition = "2018"
 [dependencies]
 llvm-sys-100 = { package = "llvm-sys", version = "100", optional = true }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm10-0"] }
-
-[workspace]
-members = [
-    "simple"
-]
