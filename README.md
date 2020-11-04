@@ -25,7 +25,8 @@ about `1.5 hours` in my MBP 2018
 
 
 ```
-LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src cargo build
+LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo build
+LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo run
 ````
 
 ### local
