@@ -4,9 +4,39 @@
 brew install cmake ninja
 ```
 
+## Install LLVM
+
+
+### remote
+
 ```bash
 cargo install llvmenv
-llvmenv build-entry  10.0.0
+```
+
+usage
+
+```
+llvmenv init
+llvmenv entries
+local-llvm 10.0.0
+```
+
+### local
+
+Add local llvm for build to: `$XDG_CONFIG_HOME/llvmenv/entry.toml
+
+docs: https://docs.rs/llvmenv/0.3.0/llvmenv/entry/index.html
+
+````
+[local-llvm]
+path = "/path/to/your/src"
+target = ["X86"]
+```
+
+**build**
+
+```
+llvmenv build-entry local-llvm
 ```
 
 
