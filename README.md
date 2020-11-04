@@ -23,12 +23,6 @@ local-llvm 10.0.0
 
 about `1.5 hours` in my MBP 2018
 
-
-```
-LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo build
-LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo run
-````
-
 ### local
 
 Add local llvm for build to: `$XDG_CONFIG_HOME/llvmenv/entry.toml
@@ -48,19 +42,13 @@ llvmenv build-entry local-llvm
 ```
 
 
+### run & build
+
+```
+LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo build
+LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo run
+````
+
 ## Documents
 
-### install for llvm 10.0
-
-for error:
-
-```bash
-error: No suitable version of LLVM was found system-wide or pointed
-       to by LLVM_SYS_100_PREFIX.
-
-       Consider using `llvmenv` to compile an appropriate copy of LLVM, and
-       refer to the llvm-sys documentation for more information.
-
-       llvm-sys: https://crates.io/crates/llvm-sys
-       llvmenv: https://crates.io/crates/llvmenv
-```
+related: [LLVM tutorial in the Rust language](https://github.com/jauhien/iron-kaleidoscope)
