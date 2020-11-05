@@ -1,6 +1,77 @@
-use crate::compiler::module_provider::ModuleProvider;
-use inkwell::context::Context;
-use core::iter;
+use std::collections::HashMap;
+use std::iter;
+
+use llvm_sys::LLVMRealPredicate::LLVMRealOLT;
+use llvm_sys::analysis::LLVMVerifierFailureAction::LLVMAbortProcessAction;
+use llvm_sys::core::LLVMDeleteFunction;
+use llvm_sys::prelude::LLVMValueRef;
+
+use iron_llvm::core;
+use iron_llvm::core::value::{Function, FunctionCtor, FunctionRef, Value, RealConstRef, RealConstCtor};
+use iron_llvm::core::types::{FunctionTypeCtor, FunctionTypeRef, RealTypeCtor, RealTypeRef};
+use iron_llvm::{LLVMRef, LLVMRefCtor};
+
+use parser;
+
+pub struct Context {
+    context: core::Context,
+    builder: core::Builder,
+    named_values: HashMap<String, LLVMValueRef>,
+    ty: RealTypeRef
+}
+
+impl Context {
+    pub fn new() -> Context {
+
+        let context = core::Context::get_global();
+        let builder = core::Builder::new();
+        let named_values = HashMap::new();
+        let ty = RealTypeRef::get_double();
+
+        Context { context: context,
+                  builder: builder,
+                  named_values: named_values,
+                  ty: ty
+        }
+    }
+}
+
+pub trait ModuleProvider {
+    fn dump(&self);
+    fn get_module(&mut self) -> &mut core::Module;
+    fn get_function(&mut self, name: &str) -> Option<(FunctionRef, bool)>;
+}
+
+pub struct SimpleModuleProvider {
+    module: core::Module
+}
+
+impl SimpleModuleProvider {
+    pub fn new(name: &str) -> SimpleModuleProvider {
+        let module = core::Module::new(name);
+
+        SimpleModuleProvider {
+            module: module
+        }
+    }
+}
+
+impl ModuleProvider for SimpleModuleProvider {
+    fn dump(&self) {
+        self.module.dump();
+    }
+
+    fn get_module(&mut self) -> &mut core::Module {
+        &mut self.module
+    }
+
+    fn get_function(&mut self, name: &str) -> Option<(FunctionRef, bool)> {
+        match self.module.get_function_by_name(name) {
+            Some(f) => Some((f, f.count_basic_blocks() > 0)),
+            None => None
+        }
+    }
+}
 
 pub type IRBuildingResult = Result<(LLVMValueRef, bool), String>;
 
@@ -117,7 +188,6 @@ impl IRBuilder for parser::Function {
         Ok((function.to_ref(), self.prototype.name.as_str() == ""))
     }
 }
-
 impl IRBuilder for parser::Expression {
     fn codegen(&self, context: &mut Context, module_provider: &mut ModuleProvider) -> IRBuildingResult {
         match self {
@@ -170,7 +240,6 @@ impl IRBuilder for parser::Expression {
                     _ => error("invalid binary operator")
                 }
             },
-
             &parser::CallExpr(ref name, ref args) => {
                 let (function, _) = match module_provider.get_function(name) {
                     Some(function) => function,
