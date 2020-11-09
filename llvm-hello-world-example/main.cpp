@@ -12,17 +12,19 @@
 #include "llvm/Support/raw_os_ostream.h"
 
 using namespace llvm;
+LLVMContext *llvmcx;
 
-static IRBuilder<> Builder(getGlobalContext());
+static LLVMContext MyGlobalContext;
+static IRBuilder<> Builder(&MyGlobalContext);
 
 std::unique_ptr<Module> buildModule()
 {
-	std::unique_ptr<Module> module = llvm::make_unique<Module>("top", getGlobalContext());
+	std::unique_ptr<Module> module = std::make_unique<Module>("top", &MyGlobalContext);
 
 	/* Create main function */
 	FunctionType *funcType = FunctionType::get(Builder.getInt32Ty(), false);	
 	Function *mainFunc = Function::Create(funcType, Function::ExternalLinkage, "main", module.get());
-	BasicBlock *entry = BasicBlock::Create(getGlobalContext(), "entrypoint", mainFunc);
+	BasicBlock *entry = BasicBlock::Create(&MyGlobalContext, "entrypoint", mainFunc);
 	Builder.SetInsertPoint(entry);
 
 	/* String constant */
@@ -39,7 +41,7 @@ std::unique_ptr<Module> buildModule()
 	Builder.CreateCall(putsFunc, helloWorldStr);
 
 	/* Return zero */
-	Builder.CreateRet(ConstantInt::get(getGlobalContext(), APInt(32, 0)));
+	Builder.CreateRet(ConstantInt::get(&MyGlobalContext, APInt(32, 0)));
 
 	return module;
 }
