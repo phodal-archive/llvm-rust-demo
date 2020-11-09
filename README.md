@@ -50,6 +50,13 @@ LLVM_SYS_100_PREFIX=$HOME/llvm/llvm-10.0.1.src/build cargo run
 ````
 
 ### docs
+=======
+```
+llvmenv init
+llvmenv entries
+llvmenv build-entry 10.0.0
+```
+
 
 ```bash
 ?> 1 + 1
