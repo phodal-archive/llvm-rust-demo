@@ -24,17 +24,31 @@ fn main() {
 
     builder.position_at_end(basic_block);
 
-    builder.build_global_string_ptr("hello, world!\n", "hello");
-
     let i32_type = context.i32_type();
     let str_type = context.i8_type().ptr_type(AddressSpace::Generic);
     let printf_type = i32_type.fn_type(&[str_type.into()], true);
 
+
     let printf = module.add_function("printf", printf_type, Some(Linkage::External));
-    // builder.build_call(&printf, &[global], "");
+
+    let string = "hello, world!\n";
+    let name = "hello";
+
+    let ty = context.i8_type().array_type(string.len() as u32);
+    let gv = module.add_global(ty, Some(AddressSpace::Generic), name);
+    gv.set_linkage(Linkage::Internal);
+    gv.set_initializer(&context.const_string(string.as_ref(), false));
+
+    let pointer_value = builder.build_pointer_cast(
+        gv.as_pointer_value(),
+        context.i8_type().ptr_type(AddressSpace::Generic),
+        name,
+    );
+
+    // builder.build_call(printf, &[&pointer_value], "");
 
     // builder.build_return(Some(&i32_type.const_int(0, false)));
 
-
-    println!("Hello, world!");
+    println!("{:?}", printf.print_to_string());
+    println!("{:?}", pointer_value.print_to_string());
 }
