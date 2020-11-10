@@ -3,6 +3,7 @@ use inkwell::{OptimizationLevel, AddressSpace};
 use inkwell::module::{Linkage, Module};
 use inkwell::builder::Builder;
 use inkwell::values::PointerValue;
+use inkwell::types::IntType;
 
 #[allow(dead_code)]
 pub struct Compiler<'a, 'ctx> {
@@ -31,16 +32,20 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 
         self.builder.position_at_end(basic_block);
 
+        let i32_type = self.emit_printf_call(&"hello, world!\n", "hello");
+        self.builder.build_return(Some(&i32_type.const_int(0, false)));
+
+        self.execute()
+    }
+
+    fn emit_printf_call(&self, hello_str: &&str, name: &str) -> IntType {
         let i32_type = self.context.i32_type();
         let str_type = self.context.i8_type().ptr_type(AddressSpace::Generic);
         let printf_type = i32_type.fn_type(&[str_type.into()], true);
         let printf = self.module.add_function("printf", printf_type, Some(Linkage::External));
-        let pointer_value = self.emit_global_string(&"hello, world!\n", "hello");
+        let pointer_value = self.emit_global_string(hello_str, name);
         self.builder.build_call(printf, &[pointer_value.into()], "");
-
-        self.builder.build_return(Some(&i32_type.const_int(0, false)));
-
-        self.execute()
+        i32_type
     }
 
     fn execute(&self) {
