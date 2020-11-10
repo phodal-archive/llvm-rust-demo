@@ -1,8 +1,4 @@
-use inkwell::builder::Builder;
 use inkwell::context::Context;
-use inkwell::module::Module;
-use inkwell::passes::PassManager;
-use inkwell::types::FunctionType;
 use inkwell::{OptimizationLevel, AddressSpace};
 use inkwell::module::Linkage;
 
@@ -11,9 +7,6 @@ use inkwell::module::Linkage;
 fn main() {
     let context = Context::create();
     let module = context.create_module("repl");
-
-    let execution_engine = module.create_jit_execution_engine(OptimizationLevel::None).unwrap();
-
     let builder = context.create_builder();
 
     let i64_type = context.i64_type();
@@ -27,7 +20,6 @@ fn main() {
     let i32_type = context.i32_type();
     let str_type = context.i8_type().ptr_type(AddressSpace::Generic);
     let printf_type = i32_type.fn_type(&[str_type.into()], true);
-
 
     let printf = module.add_function("printf", printf_type, Some(Linkage::External));
 
@@ -44,11 +36,24 @@ fn main() {
         context.i8_type().ptr_type(AddressSpace::Generic),
         name,
     );
+    builder.build_call(printf, &[pointer_value.into()], "");
 
-    // builder.build_call(printf, &[&pointer_value], "");
+    builder.build_return(Some(&i32_type.const_int(0, false)));
 
-    // builder.build_return(Some(&i32_type.const_int(0, false)));
+    // unsafe { execution_engine.get_function::<unsafe extern "C" fn() -> f64>("main").ok() };
 
-    println!("{:?}", printf.print_to_string());
-    println!("{:?}", pointer_value.print_to_string());
+    let ee = module.create_jit_execution_engine(OptimizationLevel::None).unwrap();
+    let maybe_fn = unsafe {
+        ee.get_function::<unsafe extern "C" fn() -> f64>("main")
+    };
+    // let compiled_fn = match maybe_fn {
+    //     Ok(f) => f,
+    //     Err(err) => {
+    //         println!("!> Error during execution: {:?}", err);
+    //     }
+    // };
+
+    unsafe  {
+        maybe_fn.unwrap().call();
+    }
 }
