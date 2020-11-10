@@ -22,7 +22,7 @@ std::unique_ptr<Module> buildModule()
 	std::unique_ptr<Module> module = std::make_unique<Module>("top", &MyGlobalContext);
 
 	/* Create main function */
-	FunctionType *funcType = FunctionType::get(Builder.getInt32Ty(), false);	
+	FunctionType *funcType = FunctionType::get(Builder.getInt32Ty(), false);
 	Function *mainFunc = Function::Create(funcType, Function::ExternalLinkage, "main", module.get());
 	BasicBlock *entry = BasicBlock::Create(&MyGlobalContext, "entrypoint", mainFunc);
 	Builder.SetInsertPoint(entry);
