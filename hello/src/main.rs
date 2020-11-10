@@ -1,6 +1,7 @@
 use inkwell::context::Context;
 use inkwell::{OptimizationLevel, AddressSpace};
 use inkwell::module::Linkage;
+use inkwell::execution_engine::{FunctionLookupError, JitFunction};
 
 // hello world
 // https://github.com/TheDan64/inkwell/issues/32
@@ -40,20 +41,19 @@ fn main() {
 
     builder.build_return(Some(&i32_type.const_int(0, false)));
 
-    // unsafe { execution_engine.get_function::<unsafe extern "C" fn() -> f64>("main").ok() };
-
     let ee = module.create_jit_execution_engine(OptimizationLevel::None).unwrap();
     let maybe_fn = unsafe {
         ee.get_function::<unsafe extern "C" fn() -> f64>("main")
     };
-    // let compiled_fn = match maybe_fn {
-    //     Ok(f) => f,
-    //     Err(err) => {
-    //         println!("!> Error during execution: {:?}", err);
-    //     }
-    // };
+
+    let compiled_fn = match maybe_fn {
+        Ok(f) => f,
+        Err(_) => {
+            panic!();
+        }
+    };
 
     unsafe  {
-        maybe_fn.unwrap().call();
+        compiled_fn.call();
     }
 }
