@@ -1,11 +1,10 @@
-use inkwell::context::Context;
-use inkwell::{OptimizationLevel, AddressSpace};
-use inkwell::module::{Linkage, Module};
+use inkwell::{AddressSpace, OptimizationLevel};
 use inkwell::builder::Builder;
-use inkwell::values::PointerValue;
+use inkwell::context::Context;
+use inkwell::module::{Linkage, Module};
 use inkwell::types::IntType;
+use inkwell::values::PointerValue;
 
-#[allow(dead_code)]
 pub struct Compiler<'a, 'ctx> {
     pub context: &'ctx Context,
     pub builder: &'a Builder<'ctx>,
@@ -90,8 +89,6 @@ pub fn create_compiler() {
     Compiler::new(&context, &builder, &module);
 }
 
-// hello world
-// https://github.com/TheDan64/inkwell/issues/32
 fn main() {
     create_compiler();
 }
