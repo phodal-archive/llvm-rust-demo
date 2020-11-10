@@ -100,12 +100,34 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f5f3913fa0bfe7ee1fd8248b6b9f42a5af4b9d65ec2dd2c3c26132b950ecfc2"
 
 [[package]]
+name = "hello"
+version = "0.1.0"
+dependencies = [
+ "inkwell 0.1.0-llvm10sample",
+]
+
+[[package]]
+name = "inkwell"
+version = "0.1.0-llvm10sample"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e079c12273d96e41481454a37ad968e607e1ce51b39b9facd3a802a12df6e9dc"
+dependencies = [
+ "either",
+ "inkwell_internals 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.80",
+ "llvm-sys 100.2.0",
+ "once_cell",
+ "parking_lot",
+ "regex 1.4.1",
+]
+
+[[package]]
 name = "inkwell"
 version = "0.1.0"
 source = "git+https://github.com/TheDan64/inkwell#4e8c101ea5f1961b0e7f1e9a275ae508750f3b28"
 dependencies = [
  "either",
- "inkwell_internals",
+ "inkwell_internals 0.2.0 (git+https://github.com/TheDan64/inkwell)",
  "libc 0.2.80",
  "llvm-sys 100.2.0",
  "once_cell",
@@ -117,6 +139,17 @@ dependencies = [
 name = "inkwell_internals"
 version = "0.2.0"
 source = "git+https://github.com/TheDan64/inkwell#4e8c101ea5f1961b0e7f1e9a275ae508750f3b28"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "inkwell_internals"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b22cf4eda09069b48204cce4b7cd9a25311da813780e95a038524f2210fab44e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -192,7 +225,7 @@ checksum = "4d58d1b70b004888f764dfbf6a26a3b0342a1632d33968e4a179d8011c760614"
 name = "llvm-rust-demo"
 version = "0.1.0"
 dependencies = [
- "inkwell",
+ "inkwell 0.1.0",
  "llvm-sys 100.2.0",
 ]
 
@@ -413,7 +446,7 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 name = "simple"
 version = "0.1.0"
 dependencies = [
- "inkwell",
+ "inkwell 0.1.0",
  "llvm-sys 100.2.0",
 ]
 
@@ -505,7 +538,7 @@ checksum = "b4ae116fef2b7fea257ed6440d3cfcff7f190865f170cdad00bb6465bf18ecba"
 name = "well"
 version = "0.1.0"
 dependencies = [
- "inkwell",
+ "inkwell 0.1.0",
  "llvm-sys 100.2.0",
 ]
 

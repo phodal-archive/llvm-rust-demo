@@ -15,4 +15,5 @@ members = [
     "simple",
     "calculate",
     "well",
+    "hello",
 ]
